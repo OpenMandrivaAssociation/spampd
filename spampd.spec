@@ -13,7 +13,6 @@ License:	GPL
 Group:		Networking/Mail
 BuildArch:	noarch
 BuildRequires:	perl
-BuildRoot:	%_tmppath/%name-%version-buildroot
 Prereq:		rpm-helper
 
 %description
