@@ -13,7 +13,7 @@ License:	GPL
 Group:		Networking/Mail
 BuildArch:	noarch
 BuildRequires:	perl
-Prereq:		rpm-helper
+Requires(post,preun):	rpm-helper
 
 %description
 spampd is an SMTP/LMTP proxy that marks (or tags) spam using
