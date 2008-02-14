@@ -11,6 +11,7 @@ Patch:		spampd-2.30-mdv.patch
 URL:		http://www.wdg.us/index.cfm/rd/mta/spampd.htm
 License:	GPL
 Group:		Networking/Mail
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
 BuildRequires:	perl
 Requires(post,preun):	rpm-helper
