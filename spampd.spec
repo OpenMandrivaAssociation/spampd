@@ -1,6 +1,6 @@
 %define name	spampd
 %define version	2.30
-%define release	%mkrel 4
+%define release	%mkrel 5
 
 Name:		%{name}
 Version:	%{version}
