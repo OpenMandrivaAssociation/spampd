@@ -1,0 +1,105 @@
+--- spampd-2.30/spampd.sysconfig.mdv	2006-07-30 20:31:13.000000000 +0200
++++ spampd-2.30/spampd.sysconfig	2006-07-30 20:31:13.000000000 +0200
+@@ -0,0 +1,8 @@
++# ip address and port to listen on
++LISTEN=127.0.0.1:10025
++# ip address and port to send processed mail
++RELAYHOST=127.0.0.1:10026
++MAXCHILD=5
++# Options (see man page)
++OPTIONS="--local-only --tagall"
++
+--- spampd-2.30/spampd-rh-rc-script.mdv	2002-05-20 09:20:06.000000000 +0200
++++ spampd-2.30/spampd-rh-rc-script	2006-07-30 21:10:36.000000000 +0200
+@@ -2,10 +2,23 @@
+ #
+ # This script starts and stops the spampd daemon
+ #
+-# chkconfig: 2345 80 30
++# chkconfig: 2345 79 31
+ #
+ # description: spampd is a daemon process which uses SpamAssassin to check
+ #              email messages for SPAM.
++# processname: spampd
++# pidfile: /var/run/spampd.pid
++# config: /etc/sysconfig/spampd
++#
++### BEGIN INIT INFO
++# Provides: spampd
++# Default-Start: 2 3 4 5
++# Required-Start: $network
++# Required-Stop: $network
++# Short-Description: Spam Proxy Daemon
++# Description: spampd is a daemon process which uses SpamAssassin to check
++#              email messages for SPAM.
++### END INIT INFO
+ 
+ # Source function library.
+ . /etc/rc.d/init.d/functions
+@@ -16,37 +29,50 @@
+ # Check that networking is up.
+ [ ${NETWORKING} = "no" ] && exit 0
+ 
+-[ -f /usr/bin/spampd -o -f /usr/local/bin/spampd ] || exit 0
+-PATH=$PATH:/usr/bin:/usr/local/bin
++LISTEN=127.0.0.1:10025
++RELAYHOST=127.0.0.1:10026
++MAXCHILD=5
++OPTIONS="--local-only --tagall"
++
++[ -f /etc/sysconfig/spampd ] && . /etc/sysconfig/spampd
++
++[ -f /usr/sbin/spampd ] || exit 0
++
++RETVAL=0
+ 
+ # See how we were called.
+ case "$1" in
+   start)
+ 	# Start daemon.
+ 	echo -n "Starting spampd: "
+-	daemon spampd --port=10025 --relayhost=127.0.0.1:25 --tagall --auto-whitelist
++	daemon spampd --host=${LISTEN} --relayhost=${RELAYHOST} --children=${MAXCHILD} ${OPTIONS}
+ 	RETVAL=$?
+-	touch /var/lock/spampd
+ 	echo
++	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/spampd
++	exit $RETVAL
+ 	;;
+   stop)
+ 	# Stop daemons.
+ 	echo -n "Shutting down spampd: "
+ 	killproc spampd
+ 	RETVAL=$?
+-	rm -f /var/lock/spampd
+ 	echo
++	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/spampd
++	exit $RETVAL
+ 	;;
+-  restart)
++  restart|reload)
+ 	$0 stop
+ 	$0 start
+ 	;;
+   status)
+ 	status spampd
+ 	;;
++  condrestart)
++	[ -f /var/lock/spampd ] && restart || :
++	;;
+   *)
+-	echo "Usage: $0 {start|stop|restart|status}"
++	echo "Usage: $0 {start|stop|status|restart|reload|condrestart}"
+ 	exit 1
+ esac
+ 
+-exit 0
++exit $?
+--- spampd-2.30/spampd.mdv	2005-10-31 20:45:53.000000000 +0100
++++ spampd-2.30/spampd	2006-07-30 20:31:13.000000000 +0200
+@@ -1,4 +1,5 @@
+ #!/usr/bin/perl -T
++umask 0077;
+ 
+ ######################
+ # SpamPD - spam proxy daemon
