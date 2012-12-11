@@ -1,17 +1,12 @@
-%define name	spampd
-%define version	2.30
-%define release	%mkrel 6
-
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
+Name:		spampd
+Version:	2.30
+Release:	7
 Summary:	Spam Proxy Daemon
-Source:		http://www.wdg.us/Content/rd/mta/%{name}/%{name}-%{version}.tar.bz2
-Patch:		spampd-2.30-mdv.patch
+Source0:	http://www.wdg.us/Content/rd/mta/%{name}/%{name}-%{version}.tar.bz2
+Patch0:		spampd-2.30-mdv.patch
 URL:		http://www.wdg.us/index.cfm/rd/mta/spampd.htm
-License:	GPL
+License:	GPLv2+
 Group:		Networking/Mail
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
 BuildRequires:	perl
 Requires(post,preun):	rpm-helper
@@ -27,12 +22,11 @@ as it is configured to do so.
 
 %prep
 %setup -q
-%patch -p1 -b .mdv
+%patch0 -p1 -b .mdv
 make spampd.8
 chmod 644 *
 
 %install
-rm -rf %buildroot
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sbindir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
@@ -41,9 +35,6 @@ install -m 755 spampd %{buildroot}%{_sbindir}/spampd
 install -m 755 spampd-rh-rc-script %{buildroot}%{_initrddir}/spampd
 install -m 644 spampd.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/spampd
 install -m 644 spampd.8 %{buildroot}%{_mandir}/man8/spampd.8
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %_post_service spampd
@@ -69,4 +60,56 @@ fi
 %{_mandir}/man8/spampd.8*
 
 
+
+
+
+%changelog
+* Tue Sep 08 2009 Thierry Vignaud <tvignaud@mandriva.com> 2.30-6mdv2010.0
++ Revision: 434013
+- rebuild
+
+* Sat Aug 02 2008 Thierry Vignaud <tvignaud@mandriva.com> 2.30-5mdv2009.0
++ Revision: 260939
+- rebuild
+
+* Tue Jul 29 2008 Thierry Vignaud <tvignaud@mandriva.com> 2.30-4mdv2009.0
++ Revision: 252910
+- rebuild
+- fix no-buildroot-tag
+
+* Tue Dec 18 2007 Thierry Vignaud <tvignaud@mandriva.com> 2.30-2mdv2008.1
++ Revision: 131798
+- fix prereq on rpm-helper
+- kill re-definition of %%buildroot on Pixel's request
+
+
+* Sun Jul 30 2006 Luca Berra <bluca@comedia.it>
++ 2006-07-30 21:24:55 (42827)
+- force default umask (#24001)
+  rework initscript
+  spec cleanup
+
+* Sun Jul 30 2006 Luca Berra <bluca@comedia.it>
++ 2006-07-30 17:37:14 (42815)
+- import spampd-2.30-1mdk
+
+* Sat Jan 21 2006 Luca Berra <bluca@vodka.it> 2.30-1mdk
+- New release 2.30
+
+* Fri Oct 15 2004 Luca Berra <bluca@vodka.it> 2.20-1mdk 
+- 2.20
+
+* Sun Feb 01 2004 Luca Berra <bluca@vodka.it> 2.12-2mdk 
+- auto-add to postfix
+
+* Sat Jan 17 2004 Luca Berra <bluca@vodka.it> 2.12-1mdk 
+- 2.12
+- use tar package
+
+* Sun Nov 09 2003 Luca Berra <bluca@vodka.it> 2.11-2mdk
+- fix description tag
+- fixed init-script
+
+* Sun Oct 05 2003 Luca Berra <bluca@vodka.it> 2.11-1mdk
+- initial release
 
