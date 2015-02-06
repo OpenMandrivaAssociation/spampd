@@ -1,6 +1,6 @@
 Name:		spampd
 Version:	2.30
-Release:	7
+Release:	8
 Summary:	Spam Proxy Daemon
 Source0:	http://www.wdg.us/Content/rd/mta/%{name}/%{name}-%{version}.tar.bz2
 Patch0:		spampd-2.30-mdv.patch
