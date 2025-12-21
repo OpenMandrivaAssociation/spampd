@@ -8,6 +8,7 @@ URL:		https://www.wdg.us/index.cfm/rd/mta/spampd.htm
 License:	GPLv2+
 Group:		Networking/Mail
 BuildArch:	noarch
+BuildRequires:	make
 BuildRequires:	perl
 Requires(post,preun):	rpm-helper
 
